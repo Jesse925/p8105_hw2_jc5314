@@ -1,36 +1,69 @@
 ---
 title: "P8105 Homework 2"
-author: "Junxian Chen (jc5314)"
+author: "Junxian Chen ( jc5314 )"
 date: "9/27/2019"
 output: github_document
 ---
 
 # Problem 1
 
-Read and clean the Mr. Trash Wheel sheet:
+### Part 1: Read and clean the Mr. Trash Wheel sheet
 
-1. specify the sheet in the Excel file and to omit non-data entries (rows with notes / figures; columns containing notes) using arguments in read_excel
-2. use reasonable variable names
-3. omit rows that do not include dumpster-specific data
-4. round the number of sports balls to the nearest integer and converts the result to an integer variable (using as.integer)
-
-### Read in the Mr. Trash Wheel sheet from the Excel file and clean the data: 
-
-Load nessary libraries for this project:
+Firstly, load nessary libraries:
 
 ```{r, message = FALSE}
-library(readxl)
 library(tidyverse)
+library(readxl)
 ```
 
-Read in the data and do the clean:
+Next, read in the data as `trash_wheel_data` and do the clean:
 
 ```{r}
-file_path = 'data/HealthyHarborWaterWheelTotals2018-7-28.xlsx'
+file_path = './data/HealthyHarborWaterWheelTotals2018-7-28.xlsx'
 
 trash_wheel_data = 
-  read_excel(file_path, sheet = 'Mr. Trash Wheel', skip = 1, range = cell_cols("A:N")) %>%
+  read_excel(file_path, sheet = 'Mr. Trash Wheel', range = cell_cols("A:N")) %>%
   janitor::clean_names() %>%
-  drop_na(dumpster)
+  drop_na(dumpster) %>%
+  mutate(
+    sports_balls = as.integer(round(sports_balls))
+  )
 ```
+
+### Part 2: Read and clean precipitation data for 2017 and 2018
+
+```{r}
+# Read and clean precipitation data for 2017
+
+pre_2017_data = 
+  read_excel(file_path, sheet = '2017 Precipitation', skip = 1) %>%
+  janitor::clean_names() %>% 
+  drop_na(total)  %>% 
+  mutate(year = 2017)
+  
+```
+
+```{r}
+# Read and clean precipitation data for 2018
+
+pre_2018_data = 
+  read_excel(file_path, sheet = '2018 Precipitation', skip = 1) %>%
+  janitor::clean_names() %>% 
+  drop_na(total) %>% 
+  mutate(year = 2018)
+```
+
+```{r, message = FALSE}
+# Combine precipitation datasets and convert month to a character variable
+
+pre_2017_18 = 
+  full_join(pre_2017_data, pre_2018_data) %>%
+  mutate(month = month.name[month]) %>%
+  replace_na(list(month = 'Sum'))
+
+pre_2017_18
+```
+
+### Part 3: Brief information about these data
+
 
