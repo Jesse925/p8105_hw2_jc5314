@@ -7,7 +7,7 @@ output: github_document
 
 # Problem 1
 
-### Part 1: Read and clean the Mr. Trash Wheel sheet
+### Part 1. Read and clean the Mr. Trash Wheel sheet
 
 Firstly, load nessary libraries:
 
@@ -19,7 +19,7 @@ library(readxl)
 Next, read in the data as `trash_wheel_data` and do the clean:
 
 ```{r}
-file_path = './data/HealthyHarborWaterWheelTotals2018-7-28.xlsx'
+file_path = "./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx"
 
 trash_wheel_data = 
   read_excel(file_path, sheet = 'Mr. Trash Wheel', range = cell_cols("A:N")) %>%
@@ -30,7 +30,7 @@ trash_wheel_data =
   )
 ```
 
-### Part 2: Read and clean precipitation data for 2017 and 2018
+### Part 2. Read and clean precipitation data for 2017 and 2018
 
 ```{r}
 # Read and clean precipitation data for 2017
@@ -40,7 +40,6 @@ pre_2017_data =
   janitor::clean_names() %>% 
   drop_na(total)  %>% 
   mutate(year = 2017)
-  
 ```
 
 ```{r}
@@ -60,10 +59,145 @@ pre_2017_18 =
   full_join(pre_2017_data, pre_2018_data) %>%
   mutate(month = month.name[month]) %>%
   replace_na(list(month = 'Sum'))
-
-pre_2017_18
 ```
 
-### Part 3: Brief information about these data
+### Part 3. A brief summary about these data
 
+
+# Problem 2
+
+```{r, message = FALSE}
+# read in and clean the data from pols-month.csv
+
+pols_data = 
+  read_csv("./data/fivethirtyeight_datasets/pols-month.csv") %>%
+  separate(mon, c('year', 'month', 'day'), convert = TRUE) %>%
+  mutate(
+    month = month.name[month],
+    president = ifelse(prez_gop == 0, 'dem', 'gop'),
+  ) %>%
+  select(-c(day, prez_dem, prez_gop))
+```
+
+(Note: Because the `prez_gop` data from '1974/08/15- 1974/12/15' is recorded as `2` instead of `0` or `1`, I used `ifelse(prez_gop == 0, 'dem', 'gop')` in the code above to avoid dealing with `2` in the classification.)
+
+```{r, message = FALSE}
+# read in and clean the data from snp.csv
+
+snp_data = 
+  read_csv("./data/fivethirtyeight_datasets/snp.csv") %>%
+  separate(date, c('month', 'day', 'year'), convert = TRUE) %>%
+  mutate(month = month.name[month]) %>%
+  select(year, month, close)
+```
+
+```{r, message = FALSE}
+# read in and clean the data from unemployment.csv
+
+unemployment_data = 
+  read_csv("./data/fivethirtyeight_datasets/unemployment.csv") %>%
+  pivot_longer(
+    Jan:Dec,
+    names_to = 'month',
+    values_to = 'unemployment rate'
+  ) %>%
+  mutate(
+    month = month.name[match(month, month.abb)]
+  ) %>%
+  janitor::clean_names()
+```
+
+Merge dataset`snp` into `pols`:
+
+```{r}
+pols_snp_merge = full_join(pols_data, snp_data, by = c('year', 'month'))
+```
+
+Then merge `unemployment` into the results:
+
+```{r}
+data_merge = full_join(pols_snp_merge, unemployment_data, by = c('year', 'month'))
+```
+
+### A brief summary about these data
+
+
+# Problem 3
+
+### Part 1. Load and tidy the data
+
+```{r, message = FALSE}
+baby_name_data = 
+  read_csv("./data/Popular_Baby_Names.csv") %>%
+  janitor::clean_names() %>%
+  distinct() %>%
+  mutate(
+    childs_first_name = str_to_title(childs_first_name),
+    gender = str_to_title(gender),
+    ethnicity = 
+      str_to_title(
+        ifelse(ethnicity ==  'BLACK NON HISP', 'BLACK NON HISPANIC',
+          ifelse(ethnicity ==  'WHITE NON HISP', 'WHITE NON HISPANIC',
+            ifelse(ethnicity == 'ASIAN AND PACI', 'ASIAN AND PACIFIC ISLANDER', ethnicity
+            )
+          )
+        )
+      )
+  )
+```
+
+### Part 2. A table showing the rank in popularity of the name “Olivia” over time
+
+```{r}
+olivia_popularity = 
+  baby_name_data %>%
+  arrange(year_of_birth) %>%
+  filter(childs_first_name == 'Olivia' & gender == 'Female') %>%
+  select('Baby`s Name' = childs_first_name , year_of_birth, 'Sex of the Baby' = gender, 
+         'Mother`s Ethnicity' = ethnicity, rank) %>%
+  pivot_wider(
+    names_from = 'year_of_birth',
+    values_from = 'rank'
+  ) %>%
+  rename('Rank in 2016' = '2016', 'Rank in 2015' = '2015', 'Rank in 2014' = '2014', 
+         'Rank in 2013' = '2013', 'Rank in 2012' = '2012', 'Rank in 2011' = '2011')
+
+# show the table
+
+print.data.frame(olivia_popularity)
+```
+
+### Part 3. A table showing the most popular name among male children over time
+```{r}
+popular_name_male = 
+  baby_name_data %>%
+  arrange(year_of_birth) %>%
+  filter(gender == 'Male' & rank == '1') %>%
+  select(childs_first_name, year_of_birth, 'Mother`s Ethnicity' = ethnicity) %>%
+  pivot_wider(
+    names_from = 'year_of_birth',
+    values_from = 'childs_first_name'
+  ) %>%
+  rename('Most pop name in 2016' = '2016', 'Most pop name in 2015' = '2015', 'Most pop name in 2014' = '2014', 
+         'Most pop name in 2013' = '2013', 'Most pop name in 2012' = '2012', 'Most pop name in 2011' = '2011')
+
+# show the table
+
+print.data.frame(popular_name_male)
+```
+
+### Part 4. A scatter plot showing the number of children with a name against the rank in popularity
+
+```{r, fig.width = 10}
+names_poplarity_plot =
+  baby_name_data %>%
+  filter(gender == 'Male', ethnicity == 'White Non Hispanic', year_of_birth == '2016') %>%
+  ggplot(aes(x = rank, y = count)) +
+  geom_point() +
+  labs(x = 'Rank in popularity of the name', 
+       y = 'Number of children with the name',
+       title = 'Name poplularity and counts for male, white non-hispanic children born in 2016') 
+
+names_poplarity_plot
+```
 
