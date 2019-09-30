@@ -124,11 +124,18 @@ pols_snp_merge = full_join(pols_data, snp_data, by = c('year', 'month'))
 Then merge `unemployment` into the results:
 
 ```{r}
-data_merge = full_join(pols_snp_merge, unemployment_data, by = c('year', 'month'))
+merge_data = full_join(pols_snp_merge, unemployment_data, by = c('year', 'month'))
 ```
 
 ### Part 3. A brief summary about these data
 
+The dataset `pols_data` contains `r nrow(pols_data)` observations and `r ncol(pols_data)` variables which include year, month, and information related to the presidency and number of national politicians who are democratic or republican at the given time. The range of year is from `r range(pull(pols_data, year))[1]` to `r range(pull(pols_data, year))[2]`.
+
+The dataset `snp_data` contains `r nrow(snp_data)` observations and `r ncol(snp_data)` variables which include year, month, and the closing values of the Standard & Poor’s stock index at the given time. The range of year is from `r range(pull(snp_data, year))[1]` to `r range(pull(snp_data, year))[2]`.
+
+The dataset `unemployment_data` contains `r nrow(unemployment_data)` observations and `r ncol(unemployment_data)` variables which include year, month, and the percentage of unemployment at the given time.The range of year is from `r range(pull(unemployment_data, year))[1]` to `r range(pull(unemployment_data, year))[2]`.
+
+The dataset `merge_data`, by merging the above three datasets using `full_join()`, contains `r nrow(merge_data)` observations and `r ncol(merge_data)` variables which include year, month, information of the presidency, number of national politicians who are democratic or republican, the closing values of the S&P stock index, and the percentage of unemployment at the given time.The range of year in this dataset is from `r range(pull(merge_data, year))[1]` to `r range(pull(merge_data, year))[2]`. The key variables in this dataset should be the `President` which indicates the party the president comes from, `gov_gop` and `gov_dem` which shows the number of govenors in both Democratic and Republican Party that reflects the power of the party at that time period, `close` and `unemploment_rate` which shows the national economic situations at the given time.
 
 # Problem 3
 
@@ -176,6 +183,7 @@ print.data.frame(olivia_popularity)
 ```
 
 ### Part 3. A table showing the most popular name among male children over time
+
 ```{r}
 popular_name_male = 
   baby_name_data %>%
