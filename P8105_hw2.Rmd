@@ -38,7 +38,7 @@ trash_wheel_data =
 pre_2017_data = 
   read_excel(file_path, sheet = '2017 Precipitation', skip = 1) %>%
   janitor::clean_names() %>% 
-  drop_na(total)  %>% 
+  drop_na()  %>% 
   mutate(year = 2017)
 ```
 
@@ -48,7 +48,7 @@ pre_2017_data =
 pre_2018_data = 
   read_excel(file_path, sheet = '2018 Precipitation', skip = 1) %>%
   janitor::clean_names() %>% 
-  drop_na(total) %>% 
+  drop_na() %>% 
   mutate(year = 2018)
 ```
 
@@ -57,14 +57,20 @@ pre_2018_data =
 
 pre_2017_18 = 
   full_join(pre_2017_data, pre_2018_data) %>%
-  mutate(month = month.name[month]) %>%
-  replace_na(list(month = 'Sum'))
+  mutate(month = month.name[month])
 ```
 
 ### Part 3. A brief summary about these data
 
+The dataset `trash_wheel_data` which comes from the Mr. Trash Wheel sheet has `r nrow(trash_wheel_data)` observations. After omitting rows without precipitation data and the sum value of the year, the dataset `pre_2017_data`, which is the precipitation data for 2017, has `r nrow(pre_2017_data)` observations and the dataset `pre_2018_data`, which is the precipitation data for 2018, has `r nrow(pre_2018_data)` observations. The combined precipitation dataset of 2017-18 has `r nrow(pre_2017_18)` observations.
+
+For the dataset `trash_wheel_data` which comes from the Mr. Trash Wheel sheet, the key variables I think should be the '**Month**', '**Weight**' and '**Volume**' of each dumpster. Based on these variables, we can find the trend of trash collection by Mr. Trash Wheel over time and how it performance in different month. Also, the **precipitation value** of each month in each year can be also considered as key variables. Because from the dataset, we can find that the amount of trash Mr. Trash Wheel receives is highly dependent on precipitation, which accords with the description by the dirctor.
+
+According to the data, the total precipitation in 2018 is `r sum(pull(pre_2018_data, total))` inch. The median number of sports balls in a dumpster in 2017 is `r median(pull(filter(trash_wheel_data, year == 2017), sports_balls))`.
 
 # Problem 2
+
+### Part 1. Read and clean the datasets
 
 ```{r, message = FALSE}
 # read in and clean the data from pols-month.csv
@@ -107,6 +113,8 @@ unemployment_data =
   janitor::clean_names()
 ```
 
+### Part 2. Merge the datasets
+
 Merge dataset`snp` into `pols`:
 
 ```{r}
@@ -119,7 +127,7 @@ Then merge `unemployment` into the results:
 data_merge = full_join(pols_snp_merge, unemployment_data, by = c('year', 'month'))
 ```
 
-### A brief summary about these data
+### Part 3. A brief summary about these data
 
 
 # Problem 3
@@ -197,6 +205,8 @@ names_poplarity_plot =
   labs(x = 'Rank in popularity of the name', 
        y = 'Number of children with the name',
        title = 'Name poplularity and counts for male, white non-hispanic children born in 2016') 
+
+# show the plot
 
 names_poplarity_plot
 ```
