@@ -19,7 +19,7 @@ library(readxl)
 Next, read in the data as `trash_wheel_data` and do the clean:
 
 ```{r}
-file_path = "./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx"
+file_path = "./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx"
 
 trash_wheel_data = 
   read_excel(file_path, sheet = 'Mr. Trash Wheel', range = cell_cols("A:N")) %>%
