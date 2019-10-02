@@ -62,9 +62,9 @@ pre_2017_18 =
 
 ### Part 3. A brief summary about these data
 
-The dataset `trash_wheel_data` which comes from the Mr. Trash Wheel sheet has `r nrow(trash_wheel_data)` observations. After omitting rows without precipitation data and the sum value of the year, the dataset `pre_2017_data`, which is the precipitation data for 2017, has `r nrow(pre_2017_data)` observations and the dataset `pre_2018_data`, which is the precipitation data for 2018, has `r nrow(pre_2018_data)` observations. The combined precipitation dataset of 2017-18 has `r nrow(pre_2017_18)` observations.
+The dataset `trash_wheel_data` which comes from the Mr. Trash Wheel sheet has `r nrow(trash_wheel_data)` observations. After omitting row of the sum value of the year, the dataset `pre_2017_data`, which is the precipitation data for 2017, has `r nrow(pre_2017_data)` observations and the dataset `pre_2018_data`, which is the precipitation data for 2018, has `r nrow(pre_2018_data)` observations. The combined precipitation dataset of 2017-18 has `r nrow(pre_2017_18)` observations.
 
-For the dataset `trash_wheel_data` which comes from the Mr. Trash Wheel sheet, the key variables I think should be the '**Month**', '**Weight**' and '**Volume**' of each dumpster. Based on these variables, we can find the trend of trash collection by Mr. Trash Wheel over time and how it performance in different month. Also, the **precipitation value** of each month in each year can be also considered as key variables. Because from the dataset, we can find that the amount of trash Mr. Trash Wheel receives is highly dependent on precipitation, which accords with the description by the dirctor.
+For the dataset `trash_wheel_data` which comes from the Mr. Trash Wheel sheet, the key variables I think should be the '**Month**', '**Weight**' and '**Volume**' of each dumpster. Based on these variables, we can find the trend of trash collection by Mr. Trash Wheel over time and how it performance in different months. Also, the **precipitation value** of each month in each year can be also considered as key variables. Because from the dataset, we can find that the amount of trash Mr. Trash Wheel receives is highly dependent on precipitation, which accords with the description by the dirctor.
 
 According to the data, the total precipitation in 2018 is `r sum(pull(pre_2018_data, total))` inch. The median number of sports balls in a dumpster in 2017 is `r median(pull(filter(trash_wheel_data, year == 2017), sports_balls))`.
 
@@ -135,7 +135,7 @@ The dataset `snp_data` contains `r nrow(snp_data)` observations and `r ncol(snp_
 
 The dataset `unemployment_data` contains `r nrow(unemployment_data)` observations and `r ncol(unemployment_data)` variables which include year, month, and the percentage of unemployment at the given time.The range of year is from `r range(pull(unemployment_data, year))[1]` to `r range(pull(unemployment_data, year))[2]`.
 
-The dataset `merge_data`, by merging the above three datasets using `full_join()`, contains `r nrow(merge_data)` observations and `r ncol(merge_data)` variables which include year, month, information of the presidency, number of national politicians who are democratic or republican, the closing values of the S&P stock index, and the percentage of unemployment at the given time.The range of year in this dataset is from `r range(pull(merge_data, year))[1]` to `r range(pull(merge_data, year))[2]`. The key variables in this dataset should be the `President` which indicates the party the president comes from, `gov_gop` and `gov_dem` which shows the number of govenors in both Democratic and Republican Party that reflects the power of the party at that time period, `close` and `unemploment_rate` which shows the national economic situations at the given time.
+The dataset `merge_data`, by merging the above three datasets using `full_join()`, contains `r nrow(merge_data)` observations and `r ncol(merge_data)` variables which include year, month, information of the presidency, number of national politicians who are democratic or republican, the closing values of the S&P stock index, and the percentage of unemployment at the given time.The range of year in this dataset is from `r range(pull(merge_data, year))[1]` to `r range(pull(merge_data, year))[2]`. The key variables in this dataset should be: `President` which indicates the party the president comes from, `gov_gop` and `gov_dem` which shows the number of govenors in both Democratic and Republican Party that reflects the power of the party at that time period, `close` and `unemploment_rate` which shows the national economic situations at the given time.
 
 # Problem 3
 
@@ -212,7 +212,7 @@ names_poplarity_plot =
   geom_point() +
   labs(x = 'Rank in popularity of the name', 
        y = 'Number of children with the name',
-       title = 'Name poplularity and counts for male, white non-hispanic children born in 2016') 
+       title = 'Name poplularity and counts for white non-hispanic male children born in 2016') 
 
 # show the plot
 
