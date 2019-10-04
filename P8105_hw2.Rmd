@@ -175,11 +175,12 @@ olivia_popularity =
     values_from = 'rank'
   ) %>%
   rename('Rank in 2016' = '2016', 'Rank in 2015' = '2015', 'Rank in 2014' = '2014', 
-         'Rank in 2013' = '2013', 'Rank in 2012' = '2012', 'Rank in 2011' = '2011')
+         'Rank in 2013' = '2013', 'Rank in 2012' = '2012', 'Rank in 2011' = '2011') %>%
+  knitr::kable()
 
 # show the table
 
-print.data.frame(olivia_popularity)
+olivia_popularity
 ```
 
 ### Part 3. A table showing the most popular name among male children over time
@@ -195,11 +196,12 @@ popular_name_male =
     values_from = 'childs_first_name'
   ) %>%
   rename('Most pop name in 2016' = '2016', 'Most pop name in 2015' = '2015', 'Most pop name in 2014' = '2014', 
-         'Most pop name in 2013' = '2013', 'Most pop name in 2012' = '2012', 'Most pop name in 2011' = '2011')
+         'Most pop name in 2013' = '2013', 'Most pop name in 2012' = '2012', 'Most pop name in 2011' = '2011') %>%
+  knitr::kable()
 
 # show the table
 
-print.data.frame(popular_name_male)
+popular_name_male
 ```
 
 ### Part 4. A scatter plot showing the number of children with a name against the rank in popularity
